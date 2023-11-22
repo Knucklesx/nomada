@@ -2,7 +2,7 @@
 import { ItemsListModel } from "@/lib/itemsListModel";
 import { Button, Card, Text } from "@tremor/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface MyItemsListProps {
 	list: ItemsListModel[];
@@ -11,10 +11,17 @@ interface MyItemsListProps {
 export default function MyItemsList({ list }: MyItemsListProps) {
 	const router = useRouter();
 	// const [totalMeals, setTotalMeals] = useState<Record<string, number>>({});
-	const [totalMeals, setTotalMeals] = useState<Record<string, number>>(() => {
-		return JSON.parse(localStorage.getItem("totalMeals") || "{}");
-	});
+	// const [totalMeals, setTotalMeals] = useState<Record<string, number>>(() => {
+	// 	return JSON.parse(localStorage.getItem("totalMeals") || "{}");
+	// });
+	const [totalMeals, setTotalMeals] = useState<Record<string, number>>({});
 
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const totalMeals = JSON.parse(localStorage.getItem("totalMeals") || "{}");
+			setTotalMeals(totalMeals);
+		}
+	}, []);
 	const [isDisabled, setIsDisabled] = useState(true);
 
 	const handleQuantity = (id: string, action: string) => {

@@ -11,17 +11,24 @@ export default function Page() {
 		image: string;
 	}
 
-	const [totalMeals, setTotalMeals] = useState<Record<string, number>>(() => {
-		return JSON.parse(localStorage.getItem("totalMeals") || "{}");
-	});
+	// const [totalMeals, setTotalMeals] = useState<Record<string, number>>(() => {
+	// 	return JSON.parse(localStorage.getItem("totalMeals") || "{}");
+	// });
+	const [totalMeals, setTotalMeals] = useState<Record<string, number>>({});
+
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+	// useEffect(() => {
+	// 	const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+	// 	setCartItems(cart);
+	// }, []);
 	useEffect(() => {
-		const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-		setCartItems(cart);
+		if (typeof window !== 'undefined') {
+			const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+			setCartItems(cart);
+		}
 	}, []);
-
 	const handleQuantity = (id: string, action: string) => {
 		const currentTotal = totalMeals[id] || 0;
 		if (action === "increase") {
