@@ -1,17 +1,24 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'pratos' })
 export class PratosEntity {
   @PrimaryColumn()
   id: number;
   @Column()
-  name:string;
+  name: string;
   @Column()
   price: number;
   @Column()
   open_to_sell: Boolean;
   @Column()
-  promotion:Boolean;
+  promotion: Boolean;
   @Column()
   image: string;
   @Column()

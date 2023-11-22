@@ -9,6 +9,7 @@ import { PratosService } from './pratos.service';
     TypeOrmModule.forFeature([PratosEntity])
   ],
   controllers: [PratosController],
-  providers: [PratosService]
+  providers: [PratosService],
+  exports:[PratosService],
 })
 export class PratosModule {}

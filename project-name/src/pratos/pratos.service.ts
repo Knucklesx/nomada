@@ -19,6 +19,15 @@ export class PratosService {
     return await this.PratosRepository.find();
   }
 
+  async findAllPromotions() {
+      const promo = await this.PratosRepository
+        .createQueryBuilder('prato')
+        .where('prato.promotion = :promotion', { promotion: 1 })
+        .getMany();
+    
+      return promo;
+    }
+
   findOne(id: number) {
     return `This action returns a #${id} prato`;
   }

@@ -1,20 +1,46 @@
+import MyCart from "@/components/MyCartBar";
 import MealDrinkPage from "@/components/mealDrinkPage";
 import SearchBar from "@/components/seatchBar";
 import axios from "axios";
 
 export default async function Page() {
-	const { data } = await axios.get("http://localhost:3001/pratos");
+	const { data: dataPratos } = await axios.get("http://localhost:3001/pratos");
+	const { data: dataBebidas } = await axios.get(
+		"http://localhost:3001/bebidas"
+	);
 
-//   const { data } = await axios.get<DescarregoModel[]>('https://vegas.services.do.ciaa.io/admin/descarregos', {
-//     headers: {
-//         Authorization: `Bearer ${session!.access_token}`,
-//     },
-// });
+	const { data: dataBurguers } = await axios.get(
+		"http://localhost:3001/burguers"
+	);
+	const { data: dataPromo } = await axios.get(
+		"http://localhost:3001/promotion"
+	);
+
+	const { data: testeT } = await axios.get(
+		'mysql://b531ma9cd96xtk9sftv5:pscale_pw_dZ3iDuSrRsVaVNmiJOoiaiesJ3nB1fBLMdcALU6kRnE@aws.connect.psdb.cloud/nomada?ssl={"rejectUnauthorized":true}'
+	)
+	console.log(testeT);
+
+	// console.log(dataPromo.data);
+
+	//   const { data } = await axios.get<DescarregoModel[]>('https://vegas.services.do.ciaa.io/admin/descarregos', {
+	//     headers: {
+	//         Authorization: `Bearer ${session!.access_token}`,
+	//     },
+	// });
 
 	return (
 		<div className="h-screen w-screen">
+				<div className="absolute top-0 right-0 h-16 w-16">
+					<MyCart />
+			</div>
 			<SearchBar />
-			<MealDrinkPage data={data} />
+			<MealDrinkPage
+				mealData={dataPratos}
+				drinkData={dataBebidas}
+				burguerData={dataBurguers}
+				promoData={dataPromo.data}
+			/>
 		</div>
 	);
 }

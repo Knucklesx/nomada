@@ -1,37 +1,68 @@
-import { MealModel } from "@/lib/mealModel";
-import {
-	Flex,
-	ProgressBar,
-	Tab,
-	TabGroup,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Text,
-} from "@tremor/react";
+import { ItemsListModel } from "@/lib/itemsListModel";
+import { Flex, Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react";
 import PropTypes from "prop-types";
-import MyMeals from "./mealDrink/mealDB.clientside";
+import MyItemsList from "./mealDrink/mealDB.clientside";
+import MyPromo from "./mealDrink/promoDB";
 
 MealDrinkPage.defaultProps = {
-	data: [],
+	mealData: [],
+	drinkData: [],
+	burguerData: [],
+	promoData: {
+		promoBurguer: [],
+		promoPrato: []
+	},
 };
 
 MealDrinkPage.propTypes = {
-	data: PropTypes.arrayOf(PropTypes.object).isRequired,
+	mealData: PropTypes.arrayOf(PropTypes.object).isRequired,
+	drinkData: PropTypes.arrayOf(PropTypes.object).isRequired,
+	burguerData: PropTypes.arrayOf(PropTypes.object).isRequired,
+	// promoData: PropTypes.arrayOf(PropTypes.object).isRequired,
+	promoData: PropTypes.shape({
+    data: PropTypes.shape({
+      Burguer: PropTypes.arrayOf(PropTypes.object),
+      Prato: PropTypes.arrayOf(PropTypes.object),
+    })
+  }).isRequired,
 };
 
 export interface MealDrinkPageProps {
-	data: MealModel[];
+	mealData: 		ItemsListModel[],
+	drinkData: 		ItemsListModel[],
+	burguerData: 		ItemsListModel[],
+	promoData: {
+		promoBurguer: ItemsListModel[],
+		promoPrato: ItemsListModel[]
+	},
 }
 
 const defaultProps: MealDrinkPageProps = {
-	data: [],
+	mealData:[],
+	drinkData: [],
+	burguerData: [],
+	promoData: {
+		promoBurguer: [],
+		promoPrato: []
+	},
 };
 
+interface MyPromoProps {
+		promoBurguer: ItemsListModel[];
+		promoPrato: ItemsListModel[];
+	}
+
 export default async function MealDrinkPage({
-	data,
+mealData,
+drinkData,
+burguerData,
+promoData
 }: MealDrinkPageProps = defaultProps) {
-	console.log(data);
+
+	console.log(promoData.promoBurguer, promoData.promoPrato)
+
+
+
 
 	return (
 		<TabGroup className="pt-10">
@@ -43,30 +74,28 @@ export default async function MealDrinkPage({
 			</TabList>
 			<TabPanels>
 				<TabPanel>
-					<div className="mt-10">
 						<Flex className="mt-4">
-							{/* <Text className="w-full">Prod</Text> */}
-
-							{/* <div className="flex flex-block"> */}
-								<MyMeals mealList={data} />
-							{/* </div> */}
+									<MyPromo
+										promoData={promoData}
+									/>
 						</Flex>
-						<ProgressBar value={38} className="mt-2" />
-					</div>
+				</TabPanel>
+<TabPanel>
+						<Flex className="mt-4">
+								<MyItemsList list={mealData} />
+						</Flex>
+				</TabPanel>
+								<TabPanel>
+						<Flex className="mt-4">
+								<MyItemsList  list={burguerData} />
+						</Flex>
 				</TabPanel>
 				<TabPanel>
-					<div className="mt-10">
 						<Flex className="mt-4">
-							<Text className="w-full">Product Z</Text>
-							<Flex className="space-x-2" justifyContent="end">
-								<Text>$ 99,484</Text>
-								<Text>16%</Text>
-							</Flex>
+								<MyItemsList list={drinkData} />
 						</Flex>
-						<ProgressBar value={12} className="mt-2" />
-					</div>
 				</TabPanel>
 			</TabPanels>
-		</TabGroup>
+		</TabGroup> 
 	);
 }
