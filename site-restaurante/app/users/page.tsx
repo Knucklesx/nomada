@@ -16,10 +16,6 @@ export default async function Page() {
 		"http://localhost:3001/promotion"
 	);
 
-	const { data: testeT } = await axios.get(
-		'mysql://b531ma9cd96xtk9sftv5:pscale_pw_dZ3iDuSrRsVaVNmiJOoiaiesJ3nB1fBLMdcALU6kRnE@aws.connect.psdb.cloud/nomada?ssl={"rejectUnauthorized":true}'
-	)
-	console.log(testeT);
 
 	// console.log(dataPromo.data);
 
