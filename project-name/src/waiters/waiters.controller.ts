@@ -7,9 +7,16 @@ import { WaitersService } from './waiters.service';
 export class WaitersController {
   constructor(private readonly waitersService: WaitersService) {}
 
+  // @Post()
+  // async create(@Body() createWaiterDto: CreateWaiterDto) {
+  //   return await this.waitersService.create(createWaiterDto);
+  // }
   @Post()
   async create(@Body() createWaiterDto: CreateWaiterDto) {
-    return await this.waitersService.create(createWaiterDto);
+    return await this.waitersService.create(
+      createWaiterDto.username,
+      createWaiterDto.password
+    );
   }
 
   @Get()

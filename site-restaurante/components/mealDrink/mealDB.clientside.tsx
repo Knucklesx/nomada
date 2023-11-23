@@ -17,37 +17,83 @@ export default function MyItemsList({ list }: MyItemsListProps) {
 	const [totalMeals, setTotalMeals] = useState<Record<string, number>>({});
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			const totalMeals = JSON.parse(localStorage.getItem("totalMeals") || "{}");
+		if (typeof window !== "undefined") {
+			const totalMeals = JSON.parse(localStorage.getItem("cart") || "{}");
 			setTotalMeals(totalMeals);
 		}
 	}, []);
+
+	
 	const [isDisabled, setIsDisabled] = useState(true);
 
-	const handleQuantity = (id: string, action: string) => {
+	// const handleQuantity = (id: string, action: string) => {
+	// 	const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+	// 	const currentTotal = totalMeals[id] || 0;
+	// 	// if (action === "increase") {
+	// 	// 	setTotalMeals({ ...totalMeals, [id]: currentTotal + 1 });
+	// 	if (action === "increase") {
+	// 		const newTotalMeals = { ...totalMeals, [id]: currentTotal + 1 };
+	// 		setTotalMeals(newTotalMeals);
+	// 		localStorage.setItem("totalMeals", JSON.stringify(newTotalMeals));
+	// 		if (currentTotal === 0) {
+	// 			setIsDisabled(false);
+	// 		}
+	// 		// } else if (action === "decrease" && currentTotal > 0) {
+	// 		// 	setTotalMeals({ ...totalMeals, [id]: currentTotal - 1 });
+	// 		// 	if (currentTotal - 1 === 0) {
+	// 	} else if (action === "decrease" && currentTotal > 0) {
+	// 		const newTotalMeals = { ...totalMeals, [id]: currentTotal - 1 };
+	// 		setTotalMeals(newTotalMeals);
+	// 		localStorage.setItem("totalMeals", JSON.stringify(newTotalMeals));
+	// 		setIsDisabled(true);
+	// 		const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+	// 		const updatedCart = cart.filter((item: any) => item.id !== id);
+	// 		localStorage.setItem("cart", JSON.stringify(updatedCart));
+	// 	}
+	// };
+
+	const handleQuantity = (
+		id: string,
+		name: string,
+		price: number,
+		quantity: number,
+		image: string,
+		action: string
+	) => {
+		
 		const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+		const itemIndex = cart.findIndex((item: any) => item.name === name);
 		const currentTotal = totalMeals[id] || 0;
-		// if (action === "increase") {
-		// 	setTotalMeals({ ...totalMeals, [id]: currentTotal + 1 });
+
 		if (action === "increase") {
 			const newTotalMeals = { ...totalMeals, [id]: currentTotal + 1 };
 			setTotalMeals(newTotalMeals);
-			localStorage.setItem("totalMeals", JSON.stringify(newTotalMeals));
+			localStorage.setItem("cart", JSON.stringify(newTotalMeals));
+
+			if (itemIndex > -1) {
+				cart[itemIndex].quantity = newTotalMeals[id];
+			} else {
+				cart.push({ id, name, price, quantity, image });
+			}
+
 			if (currentTotal === 0) {
 				setIsDisabled(false);
 			}
-			// } else if (action === "decrease" && currentTotal > 0) {
-			// 	setTotalMeals({ ...totalMeals, [id]: currentTotal - 1 });
-			// 	if (currentTotal - 1 === 0) {
 		} else if (action === "decrease" && currentTotal > 0) {
 			const newTotalMeals = { ...totalMeals, [id]: currentTotal - 1 };
 			setTotalMeals(newTotalMeals);
-			localStorage.setItem("totalMeals", JSON.stringify(newTotalMeals));
+			localStorage.setItem("cart", JSON.stringify(newTotalMeals));
+
+			if (newTotalMeals[id] === 0) {
+				cart.splice(itemIndex, 1);
+			} else {
+				cart[itemIndex].quantity = newTotalMeals[id];
+			}
+
 			setIsDisabled(true);
-			const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-			const updatedCart = cart.filter((item: any) => item.id !== id);
-			localStorage.setItem("cart", JSON.stringify(updatedCart));
 		}
+
+		localStorage.setItem("cart", JSON.stringify(cart));
 	};
 
 	const handleBuy = (
@@ -58,10 +104,22 @@ export default function MyItemsList({ list }: MyItemsListProps) {
 		image: string
 	) => {
 		const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-		const itemIndex = cart.findIndex((item: any) => item.id === id);
+		const itemIndex = cart.findIndex((item: any) => item.name === name);
 		const newTotalMeals = { ...totalMeals, [id]: quantity };
-    setTotalMeals(newTotalMeals);
-    localStorage.setItem('totalMeals', JSON.stringify(newTotalMeals));
+		setTotalMeals(newTotalMeals);
+		localStorage.setItem("cart", JSON.stringify(newTotalMeals));
+		// if (itemIndex > -1) {
+		// 	cart[itemIndex].quantity = quantity;
+		// } else {
+		// 	cart.push({ id, name, price, quantity, image });
+		// }
+
+		// if (quantity === 0) {
+		// 	cart.splice(itemIndex, 1);
+		// }
+
+		// localStorage.setItem("cart", JSON.stringify(cart));
+
 		if (itemIndex > -1) {
 			cart[itemIndex].quantity = quantity;
 		} else {
@@ -84,9 +142,14 @@ export default function MyItemsList({ list }: MyItemsListProps) {
 			{list.map((data) => {
 				const totalMeal = totalMeals[data.id] || 0;
 				return (
+					// <Card
+					// 	key={data.id}
+					// 	className="flex-1 m-2 border border-red-500 flex flex-col items-center text-center"
+					// >
 					<Card
 						key={data.id}
-						className="flex-1 m-2 border border-red-500 flex flex-col items-center text-center"
+						className="flex-1 m-2 border border-red-500 flex flex-col items-center text-center bg-opacity-50 bg-white hover:shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+						style={{ backdropFilter: "blur(4px)" }}
 					>
 						<div className="w-full">
 							<img
@@ -103,7 +166,16 @@ export default function MyItemsList({ list }: MyItemsListProps) {
 						<div className="flex justify-center items-center">
 							<Button
 								className="border-none"
-								onClick={() => handleQuantity(data.id.toString(), "increase")}
+								onClick={() =>
+									handleQuantity(
+										data.id.toString(),
+										data.name,
+										data.price,
+										totalMeal,
+										data.image,
+										"increase"
+									)
+								}
 							>
 								+
 							</Button>
@@ -117,7 +189,16 @@ export default function MyItemsList({ list }: MyItemsListProps) {
 							<Button
 								className="border-none"
 								disabled={totalMeal === 0}
-								onClick={() => handleQuantity(data.id.toString(), "decrease")}
+								onClick={() =>
+									handleQuantity(
+										data.id.toString(),
+										data.name,
+										data.price,
+										totalMeal,
+										data.image,
+										"decrease"
+									)
+								}
 							>
 								-
 							</Button>

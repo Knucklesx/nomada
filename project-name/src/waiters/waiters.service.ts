@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EncrypterService } from 'src/auth/help/encrypter.service';
 import { Repository } from 'typeorm';
-import { CreateWaiterDto } from './dto/create-waiter.dto';
 import { UpdateWaiterDto } from './dto/update-waiter.dto';
 import { WaiterEntity } from './entities/waiter.entity';
 
@@ -11,23 +11,30 @@ export class WaitersService {
     @InjectRepository(WaiterEntity)
     private waitersRepository: Repository<WaiterEntity>,
   ) {}
-  async create(createWaiterDto: CreateWaiterDto): Promise<WaiterEntity> {
-    console.log(createWaiterDto)
-    const myNewW = this.waitersRepository.create(createWaiterDto);
-    console.log(myNewW)
-    const myG = await this.waitersRepository.save(myNewW);
-    return myNewW
+  async create(username: string, password: string): Promise<WaiterEntity> {
+    const hash = await EncrypterService.encryptPassword(password);
+    const newWaiter = this.waitersRepository.create({
+      name: username,
+      pass: hash,
+      total_sale: 0,
+    });
+    return await this.waitersRepository.save(newWaiter);
+  }
+
+  async findCredentialByUsername(name: string) {
+    return await this.waitersRepository.findOneBy({
+      name,
+    });
   }
 
   async findAll() {
     return await Promise.all(await this.waitersRepository.find());
-  
   }
 
   findOne(name: string) {
     return this.waitersRepository.findOneBy({
-      name: name
-    })
+      name: name,
+    });
   }
 
   update(id: number, updateWaiterDto: UpdateWaiterDto) {
@@ -37,8 +44,8 @@ export class WaitersService {
   async remove(name: string) {
     const findoDelete = await this.waitersRepository.findOneBy({
       name,
-    })
-    console.log(findoDelete)
-    return await this.waitersRepository.delete(findoDelete)
+    });
+    console.log(findoDelete);
+    return await this.waitersRepository.delete(findoDelete);
   }
 }

@@ -1,4 +1,7 @@
 export class CreateWaiterDto {
-  name: string;
-  total_sale: number;
+  constructor(
+    readonly username: string,
+    readonly password: string,
+    readonly total_sells: 0,
+  ) {}
 }

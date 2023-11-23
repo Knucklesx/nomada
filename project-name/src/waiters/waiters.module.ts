@@ -9,6 +9,7 @@ import { WaitersService } from './waiters.service';
     TypeOrmModule.forFeature([WaiterEntity])
   ],
   controllers: [WaitersController],
-  providers: [WaitersService]
+  providers: [WaitersService],
+  exports: [WaitersService],
 })
 export class WaitersModule {}

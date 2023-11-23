@@ -1,16 +1,18 @@
 import WaitersPage from "@/components/waiters";
-import axios from "axios";
+import { authOptions } from "@/pages/api/[...nextauth]";
+import { getServerSession } from 'next-auth';
+
 interface Waiters {
 	id: number;
 	name: string;
   total_sale: number;
 }
 export default async function Page() {
-	const { data: dataWaiters } = await axios.get<Waiters[]>(
-		"http://localhost:3001/waiters"
-	);
 
+
+	const session = await getServerSession(authOptions);
+	console.log('seesion', session)
   return (
-    <WaitersPage waiters={dataWaiters} />
+    <WaitersPage session={session!}/>
   )
 }

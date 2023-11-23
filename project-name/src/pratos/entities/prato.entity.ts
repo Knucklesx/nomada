@@ -1,8 +1,10 @@
+import { SellEntity } from 'src/sells/entities/sell.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,6 +25,10 @@ export class PratosEntity {
   image: string;
   @Column()
   total_stock: number;
+
+  @ManyToOne(() => SellEntity, (sell) => sell.pratos, { eager: true })
+  pratos: SellEntity;
+
   @CreateDateColumn()
   created_date: Date;
   @DeleteDateColumn()

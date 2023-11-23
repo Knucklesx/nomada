@@ -17,6 +17,9 @@ export class WaiterEntity {
   name: string;
 
   @Column()
+  pass: string;
+
+  @Column()
   total_sale: number;
 
   // @Column()
